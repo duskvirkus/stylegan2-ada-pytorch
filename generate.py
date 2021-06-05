@@ -329,7 +329,7 @@ def zs_to_ws(G, device, label, truncation_psi, zs):
 @click.option('--start', type=float, help='starting truncation value', default=0.0, show_default=True)
 @click.option('--stop', type=float, help='stopping truncation value', default=1.0, show_default=True)
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
-@click.option('--save_vectors', action='store_true', help='Will save vectors used to generate seeds/frames.')
+@click.option('--save_vectors', is_flag=True, help='Will save vectors used to generate seeds/frames.')
 def generate_images(
         ctx: click.Context,
         easing: str,
