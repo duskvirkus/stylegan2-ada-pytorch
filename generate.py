@@ -352,7 +352,7 @@ def generate_images(
         projected_w: Optional[str],
         start: Optional[float],
         stop: Optional[float],
-        save_vectors: bool,
+        save_vectors: Optional[bool],
 ):
     """Generate images using pretrained network pickle.
 
