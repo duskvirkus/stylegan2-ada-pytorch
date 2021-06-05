@@ -153,7 +153,7 @@ def noiseloop(nf, d, seed):
     return zs
 
 
-def images(G, device, inputs, space, truncation_psi, label, noise_mode, outdir, start=None, stop=None, save_vectors):
+def images(G, device, inputs, space, truncation_psi, label, noise_mode, outdir, save_vectors, start=None, stop=None):
     if start is not None and stop is not None:
         tp = start
         tp_i = (stop - start) / len(inputs)
@@ -181,7 +181,7 @@ def images(G, device, inputs, space, truncation_psi, label, noise_mode, outdir, 
 
 
 def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi, label, frames, noise_mode, outdir,
-                interpolation, easing, diameter, start=None, stop=None, save_vectors):
+                interpolation, easing, diameter, save_vectors, start=None, stop=None):
     if interpolation == 'noiseloop' or interpolation == 'circularloop':
         if seeds is not None:
             print(f'Warning: interpolation type: "{interpolation}" doesn’t support set seeds.')
@@ -210,7 +210,7 @@ def interpolate(G, device, projected_w, seeds, random_seed, space, truncation_ps
             else:
                 points = slerp_interpolate(points, frames)
     # generate frames
-    images(G, device, points, space, truncation_psi, label, noise_mode, outdir, start, stop, save_vectors)
+    images(G, device, points, space, truncation_psi, label, noise_mode, outdir, save_vectors, start, stop)
 
 
 def seeds_to_zs(G, seeds):
@@ -484,7 +484,7 @@ def generate_images(
 
         if process == 'interpolation-truncation':
             interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi, label, frames, noise_mode,
-                        dirpath, interpolation, easing, diameter, start, stop, save_vectors)
+                        dirpath, interpolation, easing, diameter, save_vectors, start, stop)
         else:
             interpolate(G, device, projected_w, seeds, random_seed, space, truncation_psi, label, frames, noise_mode,
                         dirpath, interpolation, easing, diameter, save_vectors)
