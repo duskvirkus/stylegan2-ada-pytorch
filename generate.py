@@ -422,6 +422,8 @@ def generate_images(
         G = legacy.load_network_pkl(f, custom=custom, **G_kwargs)['G_ema'].to(device)  # type: ignore
 
     os.makedirs(outdir, exist_ok=True)
+    if save_vectors:
+        os.makedirs(f'{outdir}/vectors', exist_ok=True)
 
     # Synthesize the result of a W projection.
     if (process == 'image') and projected_w is not None:
