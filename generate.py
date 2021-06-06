@@ -330,6 +330,7 @@ def zs_to_ws(G, device, label, truncation_psi, zs):
 @click.option('--stop', type=float, help='stopping truncation value', default=1.0, show_default=True)
 @click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
 @click.option('--save_vectors', is_flag=True, help='Will save vectors used to generate seeds/frames.')
+
 def generate_images(
         ctx: click.Context,
         easing: str,
@@ -352,7 +353,7 @@ def generate_images(
         projected_w: Optional[str],
         start: Optional[float],
         stop: Optional[float],
-        save_vectors: Optional[bool],
+        save_vectors,
 ):
     """Generate images using pretrained network pickle.
 
@@ -459,7 +460,7 @@ def generate_images(
                     np.save(f'{outdir}/vectors/seed{seed:04d}-z', vec)
                 z = torch.from_numpy(vec).to(device)
                 img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
-            else: # space is w
+            else:  # space is w
                 vec = zs_to_ws(G, device, label, truncation_psi, [vec])[0]
                 if save_vectors:
                     np.save(f'{outdir}/vectors/seed{seed:04d}-w', vec)
@@ -468,7 +469,6 @@ def generate_images(
                 img = G.synthesis(w, noise_mode=noise_mode, force_fp32=True)
             img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
             PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
-
 
     elif process == 'interpolation' or process == 'interpolation-truncation':
         # create path for frames
