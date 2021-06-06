@@ -465,7 +465,7 @@ def generate_images(
             else:  # space is w
                 vec = zs_to_ws(G, device, label, truncation_psi, [vec])[0]
                 if save_vectors:
-                    np.save(f'{outdir}/vectors/seed{seed:04d}-w', vec)
+                    np.save(f'{outdir}/vectors/seed{seed:04d}-w', torch.linalg.svd(vec).V.to("cpu"))
                 assert vec.shape[0] == 18
                 w = torch.from_numpy(vec).unsqueeze(0).to(device)
                 img = G.synthesis(w, noise_mode=noise_mode, force_fp32=True)
