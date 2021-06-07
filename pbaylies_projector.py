@@ -283,6 +283,7 @@ def project(
 @click.option('--target-image', 'target_fname', help='Target image file to project to', required=False, metavar='FILE', default=None)
 @click.option('--target-text',            help='Target text to project to', required=False, default=None)
 @click.option('--initial-latent',         help='Initial latent', default=None)
+@click.option('--initial-latent-space',   help='Specifies the space of the initial latent. Options are "w" and "z"', default=None)
 @click.option('--lr',                     help='Learning rate', type=float, default=0.1, show_default=True)
 @click.option('--num-steps',              help='Number of optimization steps', type=int, default=1000, show_default=True)
 @click.option('--seed',                   help='Random seed', type=int, default=303, show_default=True)
@@ -299,6 +300,7 @@ def run_projection(
     target_fname: str,
     target_text: str,
     initial_latent: str,
+    initial_latent_space: str,
     outdir: str,
     save_video: bool,
     seed: int,
@@ -344,8 +346,13 @@ def run_projection(
         target_text = torch.cat([clip.tokenize(target_text)]).to(device)
 
     if initial_latent is not None:
-        initial_latent = np.load(initial_latent)
-        initial_latent = initial_latent[initial_latent.files[0]]
+        if initial_latent_space == 'w':
+            initial_latent = np.load(initial_latent)['w']
+        elif initial_latent_space == 'z':
+            initial_latent = np.load(initial_latent)['z']
+        else:
+            initial_latent = np.load(initial_latent)
+            initial_latent = initial_latent[initial_latent.files[0]]
 
     # Optimize projection.
     start_time = perf_counter()
