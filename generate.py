@@ -463,10 +463,11 @@ def generate_images(
                 z = torch.from_numpy(vec).to(device)
                 img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
             else:  # space is w
-                vec = torch.linalg.svd(zs_to_ws(G, device, label, truncation_psi, [vec])[0]).V.to("cpu")
+                z = torch.from_numpy(vec).to(device)
+                w = G.mapping(z, label, truncation_psi=truncation_psi, truncation_cutoff=8)
                 if save_vectors:
-                    np.save(f'{outdir}/vectors/seed{seed:04d}-w', vec)
-                img = G.synthesis(vec, noise_mode=noise_mode, force_fp32=True)
+                    np.save(f'{outdir}/vectors/seed{seed:04d}-w', w)
+                img = G.synthesis(w, noise_mode=noise_mode, force_fp32=True)
             img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
             PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
 
